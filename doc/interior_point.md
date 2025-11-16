@@ -52,8 +52,9 @@ $$ L(\bar x, \lambda, \mu) = f(\bar x) - \mu *ln(\bar x) + \lambda^T(g_i(\bar x)
 $$
 \frac{\nabla L}{\nabla \bar x} = \nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x) \\
 \frac{\nabla L}{\nabla \lambda} = g_i(\bar x) \\
-\frac{\nabla L}{\nabla \mu} = \bar x * Z - \mu $$  
+\frac{\nabla L}{\nabla \mu} = \bar x * Z - \mu $$ 
 计算L的Hessian矩阵：  
+
 $$ \begin{aligned}
 \nabla^2_{\bar x \bar x} L &= \nabla^2_{\bar x \bar x} (\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x))  = W_{xx}\\
 \nabla^2_{\bar x \lambda} L  &= \nabla g_i(\bar x) \\
@@ -76,7 +77,23 @@ $$
 $$  
 根据经典牛顿法的更新格式：  
 $$x^{k+1} = x^k - \bigtriangledown^2 f(x^k)^{-1} \bigtriangledown f(x^k)$$  
-可以得到
+可以得到,在第k步中,  $\bar x$, $\lambda$和 $Z$的更新公式为：
+$$
+\begin{aligned}
+\bar x^{k+1} &= \bar x^k -(\nabla^2_ L)^{-1} * \nabla_{\bar x} L \\
+\lambda^{k+1} &= \lambda^k - (\nabla^2_ L)^{-1} * \nabla_{\lambda} L \\
+Z^{k+1} &= Z^k -(\nabla^2_ L)^{-1} * \nabla_{Z} L
+\end{aligned}
+$$
+那么可知:  
+$$
+\begin{bmatrix}
+   W_{xx} & \nabla g_i(\bar x) & -I \\
+   \nabla g_i(\bar x)^T & 0 & 0 \\
+   -I & 0 & 0
+\end{bmatrix} * \begin{bmatrix} d\bar x^{k+1} \\ d\lambda^{k+1} \\ dZ^{k+1} \end{bmatrix}  = - \begin{bmatrix}\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x) \\ \nabla g_i(\bar x) \\ \bar x * Z - \mu \end{bmatrix}
+$$d
+其中， $d\bar x^{k+1} \quad d\lambda^{k+1} \quad dZ^{k+1}$ 分别是变量$\bar x, \lambda, Z$ 的更新方向，$W_{\bar x \bar x}$ 是拉格朗日函数L的雅克比矩阵。  
 
 
 
