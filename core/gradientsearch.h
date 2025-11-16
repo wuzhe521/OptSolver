@@ -123,7 +123,7 @@ public:
       : f_(f), lastGradient_(x), lastX_(x) {
     // initialize queue of previous function values
     lastGradient_ = f_.gradient(lastX_);
-    for (int i = 0; i < parameters_.M; ++i) {
+    for (GONS_UINT i = 0; i < parameters_.M; ++i) {
       f_values_.push_back(f_(lastX_));
     }
   }
