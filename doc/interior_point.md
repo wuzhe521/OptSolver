@@ -27,7 +27,7 @@ $$ s_i \geq 0, i = 1, \ldots, m $$
 
 ## 障碍函数法
 当我们通过松弛变量法得到了更加简单的约束优化问题的表达形式后，我们发现，约束条件中还是有意向不等式约束$s \geq 0$，这时，我们可以使用障碍函数法来解决。我们希望得到一个关于s的函数,满足当$s<0$时，$I_(s) = 0$， 当$s \geq 0$时，$I_(s) = +\infty$。 我们把这个函数加到目标函数中，得到新的目标函数。这个函数的最优值就是我们希望得到的满足约束$s\geq 0$ 目标函数的最小值。
-$$ Obj(x, s) = f(x ) + I_s(x) $$
+$$ Obj(x, s) = f(x ) + I^*s(x) $$
 
 如何才能逼近这种函数呢？天然的我们想到了对数函数：$log(x)$的性质，我们构建一个对数函数: $-t *log(s)$ 其函数图像：
 ![](./pics/barrier_func.png)
@@ -56,7 +56,7 @@ $$
 计算L的Hessian矩阵：  
 
 $$ \begin{aligned}
-\nabla^2_{\bar x \bar x} L &= \nabla^2_{\bar x \bar x} (\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x))  = W_{xx}\\
+\nabla^2_{\bar x \bar x} L &= \nabla^2_{\bar x \bar x} (\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x))  = W_{\bar x \bar x}\\
 \nabla^2_{\bar x \lambda} L  &= \nabla g_i(\bar x) \\
 \nabla^2_{\bar x Z} L &= -I \\
 \nabla^2_{\lambda Z} L  &= 0 
@@ -91,11 +91,48 @@ $$
    W_{xx} & \nabla g_i(\bar x) & -I \\
    \nabla g_i(\bar x)^T & 0 & 0 \\
    -I & 0 & 0
-\end{bmatrix} * \begin{bmatrix} d\bar x^{k+1} \\ d\lambda^{k+1} \\ dZ^{k+1} \end{bmatrix}  = - \begin{bmatrix}\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x) \\ \nabla g_i(\bar x) \\ \bar x * Z - \mu \end{bmatrix}
+\end{bmatrix} * \begin{bmatrix} d\bar x^{k} \\ d\lambda^{k} \\ dZ^{k} \end{bmatrix}  = - \begin{bmatrix}\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x) \\ \nabla g_i(\bar x) \\ \bar x * Z - \mu \end{bmatrix}
 $$d
 其中， $d\bar x^{k+1} \quad d\lambda^{k+1} \quad dZ^{k+1}$ 分别是变量$\bar x, \lambda, Z$ 的更新方向，$W_{\bar x \bar x}$ 是拉格朗日函数L的雅克比矩阵。  
 
+因此，$W_{\bar x \bar x} = \nabla^2_{\bar x \bar x} L = \nabla^2_{\bar x \bar x} (\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x))$, $Z_k = \begin{bmatrix}z_1 & 0& 0 \\ 0 & ...&0\\0&0&z_n \end{bmatrix}$, $X_k = \begin{bmatrix}\bar x_1 & 0&0 \\  0 & ...&0 \\ 0&0&x_n \end{bmatrix}$
 
+以上还可以写成：
+$$
+\begin{bmatrix}
+   W_{xx} + \sum_k & \nabla g_i(\bar x) \\
+   \nabla g_i(\bar x)^T & 0 \\
+\end{bmatrix} * \begin{bmatrix} d\bar x^{k} \\ d\lambda^{k} \end{bmatrix} = - \begin{bmatrix}\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x) \\ \nabla g_i(\bar x) \\ \end{bmatrix} \\
+\sum_k = X^{-1}_k Z_k 
+$$
+这样，我们就可以再得到 $d\bar x^{k}$， 和$ d\lambda^{k}$ 以后，直接得到：
+$$ dZ_{k} = \mu_k  * X^{-1}_k - Z_k - \sum_{k} $$
 
+### 步长
+当我们找到了搜索方向后，我们就可以计算出步长了。目的是找到一个合适的步长值，使得目标函数尽量的减小，并且约束的违反程度尽可能小。通常有两种方法来确定步长：  
+1. 评价函数[metric function]: 评价函一般取目标函数和约束违反度绝对值乘以一个系数之和， mertric function = $f + v * \sum |c(x)|$
+2. 滤波法：滤波法使用目标函数与约束度结合来确定是否接受步长。
 
+一旦步长确定了，我们就可以得到下一步的迭代点：  
+$\bar x_{k+1} = \bar x_k + \alpha_k d \bar x_k$  
+$\lambda_{k+1} = \lambda_k + \alpha_k d\lambda^{k}$  
+$Z_{k+1} = Z_k + \alpha_k dZ_k$
+
+### 收敛准则  
+收敛准则可以定义为在一定的容差范围内，满足了KKT条件，则称该问题已收敛:  
+$\max |\nabla^2_{\bar x \bar x} (\nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x))| < \epsilon $  
+$\max|c(x)| < \epsilon$  
+$\max|XZ - \mu| < \epsilon$
+
+## 计算流程
+
+- 在可行域内寻找一个初始点 $\bar x_0$， 通过求解上面的方程来得到 $\lambda_0$ he $Z_0$
+- 检查是否满足收敛条件，如果满足则返回结果，不满足则进入下一步
+- 通过解方程组得到搜索方向
+- 用评价函数或滤波法，通过逐步减少$\alpha$来执行回退线搜
+- 通过搜索方向和$\alpha$来更新点，返回到第二步。
+
+![](./pics/IPM_Pseudocode.png)
+
+## 
 
