@@ -283,6 +283,7 @@ public:
       LOG_ERROR("迭代次数超过最大限制")
       return PenaltyOptStatus::MaxIterationReached;
     }
+    return PenaltyOptStatus::Failure;
   }
 
 private:
