@@ -9,7 +9,7 @@
 #include "vector.h"
 
 namespace gons {
-namespace qussinewton {
+namespace quasi_newton {
 
 using namespace gons::utilites::LOG_MSG;
 template <typename Function, typename X> class SRMethod {
@@ -231,7 +231,7 @@ private:
   X &m_x;
   BFGSMethodParameters m_params;
 };
-} // namespace qussinewton
+} // namespace quasi_newton
 
 } // namespace gons
 

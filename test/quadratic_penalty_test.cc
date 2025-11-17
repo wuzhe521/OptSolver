@@ -6,7 +6,7 @@ using namespace ::utilites::LOG_MSG;
 using X = ::Vector<double, 2>;
 
 int main() {
-  // eqality constrained quadratic program problem
+  // equality constrained quadratic program problem
   // 0.5 * x^T P x + q^T x
   // s.t.
   // Ax = b
@@ -21,7 +21,7 @@ int main() {
   PenaltyFunc.Optimize();
   X rlt = PenaltyFunc.get_result(); // get result
   std::cout << "result: " << rlt << std::endl;
-  // ineqality constrained quadratic program problem
+  // inequality constrained quadratic program problem
   // 0.5 * x^T P x + q^T x
   // s.t.
   // l <= Ax <= u [Ax = b => b <= Ax <= b]

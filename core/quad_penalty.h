@@ -9,7 +9,7 @@
 #include "linearsearch.h"
 #include "matrix.h"
 #include "newton.h"
-#include "qussinewton.h"
+#include "quasi_newton.h"
 #include "utilites.h"
 #include "vector.h"
 
@@ -185,7 +185,7 @@ public:
 
     GONS_UINT iter = 0;
     do {
-      qussinewton::BFGSMethod<F, X> BFGS(f_, x_);
+      quasi_newton::BFGSMethod<F, X> BFGS(f_, x_);
       BFGS.Optimize();
       x_ = BFGS.get_x();
       // 判断是否结束循环

@@ -1,4 +1,4 @@
-from qussinewton import *
+from quasi_newton import *
 import numpy as np
 
 def my_f_simple(x):
