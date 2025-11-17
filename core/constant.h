@@ -9,7 +9,7 @@ const char *SOLVER_HEADER =
 |  GONS: General Opensource Numerical Solver        |\n\
 |  Version: 1.0.0                                   |\n\
 |  Author: Wu                                       |\n\
-|  Website: https://github.com/wuzhe521/Opt_Solver  |\n\
+|  Website: https://github.com/wuzhe521/OptSolver  |\n\
 |  GONS is licensed under the MIT License.          |\n\
 |  Copyright (c) 2025 <Wu>. All rights reserved.    |\n\
 |  [Warnning]:                                      |\n\
