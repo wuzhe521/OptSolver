@@ -90,8 +90,10 @@ def show_barrier_function():
     # Z = Z.reshape((len(X) // 2, len(Y) // 2))
     plt.scatter(X, Y, c = Z, cmap='inferno', s=5, alpha=0.5)
     plt.colorbar()
-    # print(Z)
-    # plt.contour(X, Y, Z, 20)
+    
+    pos = np.where(Z == np.min(Z))
+    plt.scatter(X[pos], Y[pos], c='r', s=100)
+  
     plt.show()
 
 
