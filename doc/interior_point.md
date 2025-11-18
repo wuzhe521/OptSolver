@@ -31,16 +31,44 @@ $$ Obj(x, s) = f(x ) + I^*s(x) $$
 
 如何才能逼近这种函数呢？天然的我们想到了对数函数：$log(x)$的性质，我们构建一个对数函数: $-t *log(s)$ 其函数图像：
 ![](./pics/barrier_func.png)
-当s 越接近0时，所构建的函数越接近无穷。
+当s 越接近0时，所构建的函数越接近无穷。   
+理论上来说，一个$t_i$可以对应一个解$x^*_{ti}$, 当t连续变换时，所对应的解$x^*_{ti}$形成的路径，就叫做中心路径[central path]  
+以高中的线性规划题目为例：
+![](./pics/线性规划题目.jpg)  
+
+$$
+\min 2x + 3y \\
+s.t. \\
+2x -y - 2 \leq 0 \\
+y - x - 1 \leq 0 \\
+1 - x - y \leq 0
+$$  
+我们构造其障碍函数优化问题：
+$$\min f(x) = 2x + 3y - t*\log(-(2x -y - 2)) - t*\log(-(y - x - 1)) - t*log(-(1 - x - y))$$  
+当t = 100时，图像为：  
+![](./pics/barrier_t_100.png)  
+当t = 10时，图像为：  
+![](./pics/barrier_t_10.png)  
+当t = 1时，图像为：  
+![](./pics/barrier_t_1.png)  
+当t = 0.1时，图像为：  
+![](./pics/barrier_t_0.1.png)  
+当t = 0.01时，图像为：  
+![](./pics/barrier_t_0.01.png)   
+图中红色点移动的路径即为中心路径。确实是从内部出发，逐步移动到边界点上. 即，这是内点法的一种。
+
 
 ## 障碍函数法的KKT条件
 通过障碍函数法，我们将原来的一般约束优化问题，转化为了一个简单的约束优化问题：
 $$ \min f(x) - \mu *ln(s) $$
 $$ \text{s.t.} g_i(x, s) = 0 $$
-
+注意，上面问题的不等式约束已经通过松弛变量法转化成了等式约束。因此产生的新的约束$s > 0$也转化成了障碍函数的形式，叠加在了目标函数上。  
 我们得到这个问题的拉格朗日函数为：
 $$ L(x,s, \lambda, \mu) = f(x) - \mu *ln(s) + \lambda^T(g_i(x)) $$
 $$ L(\bar x, \lambda, \mu) = f(\bar x) - \mu *ln(\bar x) + \lambda^T(g_i(\bar x)) \\ a.t. \quad \bar x = \begin{bmatrix} x \\ s \end{bmatrix} $$
+满足其最优性一阶条件的kkt点：  
+$\nabla L = \nabla f(\bar x^*) - \frac{\mu^*}{\bar x^*} + \lambda^* \nabla g_i(\bar x^*) = 0 $  
+说明，障碍函数法对应优化问题的对偶问题的解 $\mu^*$ $\lambda^*$，也完全可以使得它们属于原目标函数的对偶问题的解。   
 令： $Z = \{z_i = \frac{\mu}{\bar x_i} | i = n..m \}$我们写出这个问题的KKT条件为：
 $$ \nabla f(\bar x) - Z + \lambda \nabla g_i(\bar x)= 0 $$
 $$ g_i(\bar x) = 0 $$
